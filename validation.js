@@ -42,17 +42,9 @@ const postput_creditValidation = (data) => {
 const post_receiptValidation = (data) => {
     const schema = Joi.object({
         buyer: Joi.string().required(),
-        item: Joi.min(1).required(),
+        items: Joi.required(),
         total_price: Joi.number().required(),
         staff: Joi.string().required()
-    });
-    return schema.validate(data);
-};
-
-//GET Receipt calidation
-const get_receiptValidation = (data) => {
-    const schema = Joi.object({
-        buyer: Joi.string().required()
     });
     return schema.validate(data);
 };
@@ -62,4 +54,3 @@ module.exports.loginValidation = loginValidation;
 module.exports.postput_itemValidation = postput_itemValidation;
 module.exports.postput_creditValidation = postput_creditValidation;
 module.exports.post_receiptValidation = post_receiptValidation;
-module.exports.get_receiptValidation = get_receiptValidation;

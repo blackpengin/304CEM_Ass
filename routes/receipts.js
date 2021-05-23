@@ -1,99 +1,74 @@
 const router = require('express').Router();
-const Coupon = require('../models/Receipt');
+const Receipt = require('../models/Receipt');
 const verify = require('../verify_token');
-const { post_receiptValidation, get_receiptValidation } = require('../validation');
+const { post_receiptValidation } = require('../validation');
 
 
-//POST Receipt
-router.post('/')
-router.post('/register', async (req, res) => {
+//POST receipt
+router.post('/', verify, async (req, res) => {
 
     //Validate Data
-    const { error } = registerValidation(req.body);
+    const { error } = post_receiptValidation(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    //Check if user exist
-    const emailExist = await User.findOne({ email: req.body.email });
-    if (emailExist) return res.status(400).send('Email already exists');
-
-    //Hash passwords
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-    //Create a new user
-    const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword
+    //Create a new receipt
+    const receipt = new Receipt({
+        buyer: req.body.buyer,
+        items: req.body.items,
+        total_price: req.body.total_price,
+        staff: req.body.staff,
     });
     try {
-        const savedUser = await user.save();
-        res.send({ user: user._id });
+        const savedreceipt = await receipt.save();
+        res.json(savedreceipt);
     } catch (err) {
         res.status(400).send(err);
     }
 });
 
-/*
-//Submit a post
-router.post('/', async(req, res)=>{
-    const post = new Post({
-        title : req.body.title,
-        description : req.body.description
+//GET receipt
+router.get('/:buyer/:date', verify, async (req, res) => {
+    const date = {
+        $dateFromString: {
+            dateString: '2021-05-22',
+        }
+    };
+    //Check if receipt exist
+    const receiptExist = await Receipt.findOne({
+        buyer: req.params.buyer,
+        date: {
+            date
+
+            //"$gte": new Date("2021-05-22T00:00:00.000Z"),
+            //"$lt": new Date("2021-05-25T00:00:00.000Z")
+        }
     });
-    try{
-    const savedPost = await post.save();
-    res.json(savedPost);
-    }catch(err){
-        res.json({message: err});
+    if (!receiptExist) return res.status(400).send('No receipt found');
+
+    //Get a receipt
+    try {
+        const receipt = await Receipt.findOne({ buyer: req.params.buyer, date: req.params.date });
+        res.json(receipt);
+    } catch (err) {
+        res.status(400).send(err);
     }
 });
 
-//Get back all post
-router.get('/', async(req, res) =>{
-    try{
-        const posts = await Post.find();
-        res.json(posts);
-    }catch(err){
-        res.json({message: err});
+//DELETE receipt
+router.delete('/:buyer/:date', async (req, res) => {
+
+    //Check if receipt exist
+    const receiptExist = await Receipt.findOne({ buyer: req.params.buyer, date: req.params.date });
+    if (!receiptExist) return res.status(400).send('No receipt found');
+
+    try {
+        const removedreceipt = await Receipt.deleteOne({ buyer: req.params.buyer, date: req.params.date });
+        res.send('Receipt Deleted');
+    } catch (err) {
+        res.json({ message: err });
     }
+
 });
-
-//Get back specific post
-router.get('/:postId', async(req, res)=>{
-    try{
-        const post = await Post.findById(req.params.postId);
-        res.json(post);
-    }catch(err){
-        res.json({message: err});
-    }
-    
-})
-
-//Delete post
-router.delete('/:postId', async(req, res)=>{
-    try{
-        const removedPost = await Post.deleteOne({_id: req.params.postId});
-        res.json(removedPost);
-    }catch(err){
-        res.json({message: err});
-    }
-    
-})
-
-//Update a post
-router.patch('/:postId', async(req, res)=>{
-    try{
-        const updatedPost = await Post.updateOne(
-            {_id: req.params.postId},
-            { $set: 
-                {title: req.body.title}});
-        res.json(updatedPost);
-    }catch(err){
-        res.json({message: err});
-    }
-    
-})*/
 
 
 module.exports = router;
