@@ -1,47 +1,38 @@
 const router = require('express').Router();
-const Post = require('../models/Post');
-const Receipt = require('../models/Receipt');
-const Coupon = require('../models/Coupon');
-const Credit = require('../models/Credit');
+const Coupon = require('../models/Receipt');
 const verify = require('../verify_token');
-const {
-    postput_itemValidation, 
-    getdelete_itemValidation, 
-    postput_creditValidation, 
-    get_creditValidation, 
-    post_receiptValidation, 
-    get_buBuyer_receiptValidation} = require('../validation');
+const { post_receiptValidation, get_receiptValidation } = require('../validation');
 
 
 //POST Receipt
 router.post('/')
-    router.post('/register', async(req, res)=>{
+router.post('/register', async (req, res) => {
 
-        //Validate Data
-        const{error} = registerValidation(req.body);
-        if(error) return res.status(400).send(error.details[0].message);
-        
-        //Check if user exist
-        const emailExist = await User.findOne({email: req.body.email});
-        if(emailExist) return res.status(400).send('Email already exists');
-    
-        //Hash passwords
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    
-        //Create a new user
-        const user = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword
-        });
-        try{
-            const savedUser = await user.save();
-            res.send({user: user._id});
-        }catch(err){
-            res.status(400).send(err);
-        }
+    //Validate Data
+    const { error } = registerValidation(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    //Check if user exist
+    const emailExist = await User.findOne({ email: req.body.email });
+    if (emailExist) return res.status(400).send('Email already exists');
+
+    //Hash passwords
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    //Create a new user
+    const user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword
     });
+    try {
+        const savedUser = await user.save();
+        res.send({ user: user._id });
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
 
 /*
 //Submit a post

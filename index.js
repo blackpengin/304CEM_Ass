@@ -9,11 +9,11 @@ require('dotenv').config();
 
 //Import Routes
 const authRoute = require('./routes/auth');
-const postRoute = require('./routes/posts');
+const itemRoute = require('./routes/items');
 
 //Route Middlewares
 app.use('/api/user', authRoute);
-app.use('/api/posts', postRoute);
+app.use('/api/items', itemRoute);
 
 //Connect to DB
 mongoose.connect(process.env.DB_CONNECTION,
