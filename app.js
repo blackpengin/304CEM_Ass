@@ -23,10 +23,10 @@ app.get('/', (req, res) =>{
 
 
 //Connect to DB
-mongoose.connect(
+/*mongoose.connect(
     process.env.DB_CONNECTION,
     { useUnifiedTopology: true, useNewUrlParser: true },
-    ()=> console.log('connected to DB'));
+    ()=> console.log('connected to DB'));*/
 
 //Start listening to server
-app.listen(3000);
+//app.listen(3000);
