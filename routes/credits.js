@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const Coupon = require('../models/Credit');
+const Credit = require('../models/Credit');
 const verify = require('../verify_token');
-const { postput_creditValidation, get_creditValidation } = require('../validation');
+const { postput_creditValidation } = require('../validation');
 
 
 //POST credit
@@ -12,13 +12,13 @@ router.post('/', verify, async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     //Check if credit exist
-    const creditExist = await credit.findOne({ name: req.body.name });
-    if (creditExist) return res.status(400).send('credit already exist');
+    const creditExist = await Credit.findOne({ owner: req.body.owner });
+    if (creditExist) return res.status(400).send('Owner already exist');
 
     //Create a new credit
-    const credit = new credit({
-        name: req.body.name,
-        price: req.body.price
+    const credit = new Credit({
+        owner: req.body.owner,
+        value: req.body.value
     });
     try {
         const savedcredit = await credit.save();
@@ -29,42 +29,42 @@ router.post('/', verify, async (req, res) => {
 });
 
 //PUT credit
-router.put('/:credit', verify, async (req, res) => {
+router.put('/:owner', verify, async (req, res) => {
 
     //Validate Data
     const { error } = postput_creditValidation(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     //Check if credit exist
-    const creditExist = await credit.findOne({ name: req.params.credit });
-    if (!creditExist) return res.status(400).send('credit do not exist');
+    const creditExist = await Credit.findOne({ owner: req.params.owner });
+    if (!creditExist) return res.status(400).send('Owner do not exist');
 
     //Edit a credit
     try {
-        const credit = await credit.updateOne({ name: req.params.credit },
+        const credit = await Credit.updateOne({ owner: req.params.owner },
             {
                 $set:
                 {
-                    name: req.body.name,
-                    price: req.body.price
+                    owner: req.body.owner,
+                    value: req.body.value
                 }
             });
-        res.send(req.params.credit + ' Updated');
+        res.send(req.params.owner + ' Updated');
     } catch (err) {
         res.status(400).send(err);
     }
 });
 
 //GET credit
-router.get('/:credit', verify, async (req, res) => {
+router.get('/:owner', verify, async (req, res) => {
 
     //Check if credit exist
-    const creditExist = await credit.findOne({ name: req.params.credit });
-    if (!creditExist) return res.status(400).send('credit do not exist');
+    const creditExist = await Credit.findOne({ owner: req.params.owner });
+    if (!creditExist) return res.status(400).send('Owner do not exist');
 
     //Get a credit
     try {
-        const credit = await credit.findOne({ name: req.params.credit });
+        const credit = await Credit.findOne({ owner: req.params.owner });
         res.json(credit);
     } catch (err) {
         res.status(400).send(err);
@@ -72,15 +72,15 @@ router.get('/:credit', verify, async (req, res) => {
 });
 
 //DELETE credit
-router.delete('/:credit', async (req, res) => {
+router.delete('/:owner', async (req, res) => {
 
     //Check if credit exist
-    const creditExist = await credit.findOne({ name: req.params.credit });
-    if (!creditExist) return res.status(400).send('credit do not exist');
+    const creditExist = await Credit.findOne({ owner: req.params.owner });
+    if (!creditExist) return res.status(400).send('Owner do not exist');
 
     try {
-        const removedcredit = await credit.deleteOne({ name: req.params.credit });
-        res.send(req.params.credit + ' Deleted')
+        const removedcredit = await Credit.deleteOne({ owner: req.params.owner });
+        res.send(req.params.owner + ' Deleted')
     } catch (err) {
         res.json({ message: err });
     }

@@ -38,14 +38,6 @@ const postput_creditValidation = (data) => {
     return schema.validate(data);
 };
 
-//GET Credit validation
-const get_creditValidation = (data) => {
-    const schema = Joi.object({
-        owner: Joi.string().required()
-    });
-    return schema.validate(data);
-};
-
 //POST Receipt calidation
 const post_receiptValidation = (data) => {
     const schema = Joi.object({
@@ -69,6 +61,5 @@ module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.postput_itemValidation = postput_itemValidation;
 module.exports.postput_creditValidation = postput_creditValidation;
-module.exports.get_creditValidation = get_creditValidation;
 module.exports.post_receiptValidation = post_receiptValidation;
 module.exports.get_receiptValidation = get_receiptValidation;
