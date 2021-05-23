@@ -1,6 +1,21 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const Post = require('../models/Post');
+const Receipt = require('../models/Receipt');
+const Coupon = require('../models/Coupon');
+const Credit = require('../models/Credit');
+const verify = require('../verify_token');
+const {
+    postput_itemValidation, 
+    getdelete_itemValidation, 
+    postput_creditValidation, 
+    get_creditValidation, 
+    post_receiptValidation, 
+    get_buBuyer_receiptValidation} = require('../validation');
+
+
+router.get('/', verify, (req, res) =>{
+    res.send(req.user);
+});
 
 /*
 //Submit a post
