@@ -33,6 +33,7 @@ const postput_itemValidation = (data) => {
 const postput_creditValidation = (data) => {
     const schema = Joi.object({
         owner: Joi.string().required(),
+        email: Joi.string().min(6).required().email(),
         value: Joi.number().min(0).required()
     });
     return schema.validate(data);

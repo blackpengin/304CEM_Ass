@@ -4,8 +4,18 @@ app.use(express.json());
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-
-
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Methods',
+        'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers',
+        '*');
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin',
+        'http://localhost:3001');
+    if (req.method === 'OPTIONS') {
+        res.status(200);
+    } next();
+})
 
 //Import Routes
 const authRoute = require('./routes/auth');

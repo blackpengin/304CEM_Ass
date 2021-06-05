@@ -28,20 +28,11 @@ router.post('/', verify, async (req, res) => {
 
 //GET receipt
 router.get('/:buyer/:date', verify, async (req, res) => {
-    const date = {
-        $dateFromString: {
-            dateString: '2021-05-22',
-        }
-    };
+
     //Check if receipt exist
     const receiptExist = await Receipt.findOne({
         buyer: req.params.buyer,
-        date: {
-            date
-
-            //"$gte": new Date("2021-05-22T00:00:00.000Z"),
-            //"$lt": new Date("2021-05-25T00:00:00.000Z")
-        }
+        date: '2021-05-23'
     });
     if (!receiptExist) return res.status(400).send('No receipt found');
 
@@ -55,7 +46,7 @@ router.get('/:buyer/:date', verify, async (req, res) => {
 });
 
 //DELETE receipt
-router.delete('/:buyer/:date', async (req, res) => {
+router.delete('/:buyer/:date', verify, async (req, res) => {
 
     //Check if receipt exist
     const receiptExist = await Receipt.findOne({ buyer: req.params.buyer, date: req.params.date });

@@ -56,6 +56,16 @@ router.put('/:item', verify, async (req, res) => {
 });
 
 //GET Item
+router.get('/', verify, async (req, res) => {
+
+    try {
+        const item = await Item.find();
+        res.json(item);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
 router.get('/:item', verify, async (req, res) => {
 
     //Check if item exist
@@ -72,7 +82,7 @@ router.get('/:item', verify, async (req, res) => {
 });
 
 //DELETE Item
-router.delete('/:item', async (req, res) => {
+router.delete('/:item', verify, async (req, res) => {
 
     //Check if item exist
     const itemExist = await Item.findOne({ name: req.params.item });
