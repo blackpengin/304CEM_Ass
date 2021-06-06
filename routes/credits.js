@@ -51,7 +51,7 @@ router.put('/:email', verify, async (req, res) => {
                     value: req.body.value
                 }
             });
-        res.send(req.params.owner + "'s Account Updated.");
+        res.send(req.params.email + "'s Account Updated.");
     } catch (err) {
         res.status(400).send(err);
     }
@@ -82,7 +82,7 @@ router.delete('/:email', verify, async (req, res) => {
 
     try {
         const removedcredit = await Credit.deleteOne({ email: req.params.email });
-        res.send(req.params.owner + "'s Account Deleted.")
+        res.send(req.params.email + "'s Account Deleted.")
     } catch (err) {
         res.json({ message: err });
     }

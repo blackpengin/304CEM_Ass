@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { registerValidation, loginValidation } = require('../validation');
 
 
-router.post('/register', verify, async (req, res) => {
+router.post('/register', async (req, res) => {
 
     //Validate Data
     const { error } = registerValidation(req.body);
@@ -33,7 +33,7 @@ router.post('/register', verify, async (req, res) => {
     }
 });
 
-router.post('/login', verify, async (req, res) => {
+router.post('/login', async (req, res) => {
 
     //Validate Data
     const { error } = loginValidation(req.body);
